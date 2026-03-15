@@ -163,7 +163,7 @@ function CangjieMenu({
   );
 }
 
-export default function CangjieHandler({
+export function CangjieHandler({
   enabled = true,
 }: {
   enabled?: boolean;
@@ -189,8 +189,40 @@ export default function CangjieHandler({
 
   const options = useMemo(() => {
     if (!enabled || !queryString) return [];
-    const candidates = CANGJIE_MAP.get(queryString) || [];
-    return candidates.map((char, index) => new CangjieOption(char, queryString, index));
+    
+    const results: CangjieOption[] = [];
+    const seen = new Set<string>();
+
+    // 1. Exact matches first
+    const exact = CANGJIE_MAP.get(queryString) || [];
+    exact.forEach((char, index) => {
+      if (!seen.has(char)) {
+        results.push(new CangjieOption(char, queryString, index));
+        seen.add(char);
+      }
+    });
+
+    // 2. Prefix matches for completions (if query is at least 1 char)
+    if (queryString.length >= 1 && queryString.length < 5) {
+      const keys = Array.from(CANGJIE_MAP.keys());
+      const prefixMatches = keys
+        .filter(k => k.startsWith(queryString) && k !== queryString)
+        .sort((a, b) => a.length - b.length || a.localeCompare(b));
+
+      for (const key of prefixMatches) {
+        if (results.length >= 20) break; // Limit suggestions
+        const chars = CANGJIE_MAP.get(key) || [];
+        for (const char of chars) {
+          if (!seen.has(char)) {
+            results.push(new CangjieOption(char, key, results.length));
+            seen.add(char);
+            if (results.length >= 20) break;
+          }
+        }
+      }
+    }
+
+    return results;
   }, [queryString, enabled]);
 
   const onSelectOption = useCallback(

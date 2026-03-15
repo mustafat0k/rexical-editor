@@ -612,7 +612,7 @@ export default function ToolbarPlugin({
   );
 
   const {
-    settings: {isCodeHighlighted, isCodeShiki, isCangjie},
+    settings: {isCodeHighlighted, isCodeShiki, activeIME},
     setOption,
   } = useSettings();
 
@@ -1262,12 +1262,33 @@ export default function ToolbarPlugin({
           {canViewerSeeInsertDropdown && (
             <>
               <Divider />
+              <button
+                disabled={!isEditable}
+                onClick={() => {
+                  setOption('activeIME', activeIME === 'cj' ? 'none' : 'cj');
+                }}
+                className={'toolbar-item spaced ' + (activeIME === 'cj' ? 'active' : '')}
+                title="Cangjie (倉)"
+                aria-label="Toggle Cangjie">
+                <span className="text" style={{fontWeight: 'bold', fontSize: '1.1em'}}>倉</span>
+              </button>
+              <button
+                disabled={!isEditable}
+                onClick={() => {
+                  setOption('activeIME', activeIME === 'py' ? 'none' : 'py');
+                }}
+                className={'toolbar-item spaced ' + (activeIME === 'py' ? 'active' : '')}
+                title="Pinyin (音)"
+                aria-label="Toggle Pinyin">
+                <span className="text" style={{fontWeight: 'bold', fontSize: '1.1em'}}>音</span>
+              </button>
+              <Divider />
               <DropDown
                 disabled={!isEditable}
-                buttonClassName="toolbar-item spaced"
                 buttonLabel="Insert"
                 buttonAriaLabel="Insert specialized editor node"
-                buttonIconClassName="icon plus">
+                buttonIconClassName="icon plus"
+                buttonClassName="toolbar-item spaced">
                 <DropDownItem
                   onClick={() =>
                     dispatchToolbarCommand(INSERT_HORIZONTAL_RULE_COMMAND)
@@ -1417,17 +1438,27 @@ export default function ToolbarPlugin({
           )}
         </>
       )}
+      <Divider />
       <button
         onClick={() => {
-          setOption('isCangjie', !isCangjie);
+          setOption('activeIME', activeIME === 'cj' ? 'none' : 'cj');
         }}
-        className={'toolbar-item spaced ' + (isCangjie ? 'active' : '')}
-        title="Toggle Cangjie IME"
+        className={'toolbar-item spaced ' + (activeIME === 'cj' ? 'active' : '')}
+        title="Toggle Cangjie IME (倉頡)"
         type="button"
         aria-label="Toggle Cangjie IME">
         <span className="text" style={{ fontWeight: 'bold' }}>倉</span>
       </button>
-      <Divider />
+      <button
+        onClick={() => {
+          setOption('activeIME', activeIME === 'py' ? 'none' : 'py');
+        }}
+        className={'toolbar-item spaced ' + (activeIME === 'py' ? 'active' : '')}
+        title="Toggle Pinyin IME (拼音)"
+        type="button"
+        aria-label="Toggle Pinyin IME">
+        <span className="text" style={{ fontWeight: 'bold' }}>音</span>
+      </button>
       <ElementFormatDropdown
         disabled={!isEditable}
         value={toolbarState.elementFormat}

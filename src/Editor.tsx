@@ -33,6 +33,9 @@ import {CAN_USE_DOM} from '@lexical/utils';
 import {useEffect, useMemo, useState} from 'react';
 import {Doc} from 'yjs';
 
+import {CangjieHandler} from './plugins/CangjiePlugin';
+import {PinyinHandler} from './plugins/PinyinPlugin';
+
 import {
   createWebsocketProvider,
   createWebsocketProviderWithDoc,
@@ -94,32 +97,33 @@ const skipCollaborationInit =
 export default function Editor(): JSX.Element {
   const {historyState} = useSharedHistoryContext();
   const {
-    settings: {
-      isCodeHighlighted,
-      isCodeShiki,
-      isCollab,
-      useCollabV2,
-      isAutocomplete,
-      isMaxLength,
-      isCharLimit,
-      hasLinkAttributes,
-      hasNestedTables,
-      hasFitNestedTables,
-      isCharLimitUtf8,
-      isRichText,
-      showTreeView,
-      showTableOfContents,
-      shouldUseLexicalContextMenu,
-      shouldPreserveNewLinesInMarkdown,
-      tableCellMerge,
-      tableCellBackgroundColor,
-      tableHorizontalScroll,
-      shouldAllowHighlightingWithBrackets,
-      selectionAlwaysOnDisplay,
-      listStrictIndent,
-      shouldDisableFocusOnClickChecklist,
-    },
-  } = useSettings();
+      settings: {
+        activeIME,
+        isCodeHighlighted,
+        isCodeShiki,
+        isCollab,
+        useCollabV2,
+        isAutocomplete,
+        isMaxLength,
+        isCharLimit,
+        hasLinkAttributes,
+        hasNestedTables,
+        hasFitNestedTables,
+        isCharLimitUtf8,
+        isRichText,
+        showTreeView,
+        showTableOfContents,
+        shouldUseLexicalContextMenu,
+        shouldPreserveNewLinesInMarkdown,
+        tableCellMerge,
+        tableCellBackgroundColor,
+        tableHorizontalScroll,
+        shouldAllowHighlightingWithBrackets,
+        selectionAlwaysOnDisplay,
+        listStrictIndent,
+        shouldDisableFocusOnClickChecklist,
+      },
+    } = useSettings();
   const isEditable = useLexicalEditable();
   const placeholder = isCollab
     ? 'Enter some collaborative rich text...'
@@ -314,6 +318,8 @@ export default function Editor(): JSX.Element {
           shouldPreserveNewLinesInMarkdown={shouldPreserveNewLinesInMarkdown}
           useCollabV2={useCollabV2}
         />
+        <CangjieHandler enabled={activeIME === 'cj'} />
+        <PinyinHandler enabled={activeIME === 'py'} />
       </div>
       {showTreeView && <TreeViewPlugin />}
     </>

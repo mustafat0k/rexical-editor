@@ -6,7 +6,6 @@ import {useLexicalComposerContext} from '@lexical/react/LexicalComposerContext';
 import {
   LexicalTypeaheadMenuPlugin,
   MenuOption,
-  useBasicTypeaheadTriggerMatch,
 } from '@lexical/react/LexicalTypeaheadMenuPlugin';
 import {
   $getSelection,
@@ -65,20 +64,37 @@ function PinyinMenuItem({
   );
 }
 
-export default function PinyinHandler(): React.JSX.Element | null {
+export function PinyinHandler({
+  enabled = true,
+}: {
+  enabled?: boolean;
+}): React.JSX.Element | null {
   const [editor] = useLexicalComposerContext();
   const [queryString, setQueryString] = useState<string | null>(null);
 
-  const checkForTriggerMatch = useBasicTypeaheadTriggerMatch('', {
-    minLength: 1,
-    maxLength: 10,
-  });
+  const triggerFn = useCallback((text: string) => {
+    if (!enabled) return null;
+    // Only match pure lowercase syllables (no uppercase, no digits)
+    // Must be an exact key in the Pinyin dictionary to avoid English false-positives
+    const match = /(?:^|[^a-z])([a-z]{1,6})$/.exec(text);
+    if (match) {
+      const syllable = match[1];
+      if (PINYIN_DATA_BRIDGE[syllable]) {
+        return {
+          leadOffset: match.index + (match[0].length - syllable.length),
+          matchingString: syllable,
+          replaceableString: syllable,
+        };
+      }
+    }
+    return null;
+  }, [enabled]);
 
   const options = useMemo(() => {
     if (!queryString) {
       return [];
     }
-    const chars = PINYIN_DATA_BRIDGE[queryString.toLowerCase()] || [];
+    const chars = PINYIN_DATA_BRIDGE[queryString] || [];
     return chars.map((char, index) => new PinyinOption(char, index));
   }, [queryString]);
 
@@ -108,7 +124,7 @@ export default function PinyinHandler(): React.JSX.Element | null {
     <LexicalTypeaheadMenuPlugin<PinyinOption>
       onQueryChange={setQueryString}
       onSelectOption={onSelectOption}
-      triggerFn={checkForTriggerMatch}
+      triggerFn={triggerFn}
       options={options}
       menuRenderFn={(
         anchorElementRef,

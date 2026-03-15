@@ -24,8 +24,6 @@ import {SharedHistoryContext} from './context/SharedHistoryContext';
 import {ToolbarContext} from './context/ToolbarContext';
 import Editor from './Editor';
 import logo from './images/logo.svg';
-import CangjieHandler from './plugins/CangjiePlugin';
-import PinyinHandler from './plugins/PinyinPlugin';
 import PlaygroundNodes from './nodes/PlaygroundNodes';
 import DocsPlugin from './plugins/DocsPlugin';
 import PasteLogPlugin from './plugins/PasteLogPlugin';
@@ -100,31 +98,8 @@ function App({initialContent, onChange, darkMode}: AppProps): JSX.Element {
           <SharedHistoryContext>
             <TableContext>
               <ToolbarContext>
-                <header>
-                  <a href="https://lexical.dev" target="_blank" rel="noreferrer">
-                    <img src={logo} alt="Lexical Logo" />
-                  </a>
-                  <div className="toolbar-v2-inline">
-                    <button
-                      type="button"
-                      onClick={() => setOption('activeIME', activeIME === 'cj' ? 'none' : 'cj')}
-                      className={'toolbar-item ' + (activeIME === 'cj' ? 'active' : '')}
-                      title="Cangjie Handler">
-                      <span className="text">倉</span>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setOption('activeIME', activeIME === 'py' ? 'none' : 'py')}
-                      className={'toolbar-item ' + (activeIME === 'py' ? 'active' : '')}
-                      title="Pinyin Handler">
-                      <span className="text">音</span>
-                    </button>
-                  </div>
-                </header>
                 <div className="editor-shell">
                   <Editor />
-                  <CangjieHandler enabled={activeIME === 'cj'} />
-                  {activeIME === 'py' && <PinyinHandler />}
                 </div>
                 <Settings />
                 {isDevPlayground ? <DocsPlugin /> : null}
