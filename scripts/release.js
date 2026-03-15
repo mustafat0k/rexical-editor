@@ -101,7 +101,7 @@ const indexHtmlContent = `<!DOCTYPE html>
     </div>
 
     <script type="module">
-        import { initLexicalPlaygroundV2 } from './editor.bundle.js';
+        import { initLexicalPlayground } from './editor.bundle.js';
         
         const shell = document.getElementById('shell');
         let isDark = localStorage.getItem('theme') === 'dark';
@@ -126,8 +126,8 @@ const indexHtmlContent = `<!DOCTYPE html>
 
         applyTheme();
 
-        initLexicalPlaygroundV2('editor', {
-            initialContent: 'Welcome to Lexical ${versionDirName}. Type "am" to test Cangjie (倉).',
+        initLexicalPlayground('editor', {
+            initialContent: 'Welcome to Lexical ${versionDirName}. Type "am" (倉) or "ni" (音) to test.',
             darkMode: isDark
         });
     </script>
