@@ -1,24 +1,62 @@
-:root {
-  /* Common variables for easy skinning */
-  --editor-bg: #fff;
+/* Global Theme Hooks */
+:root, body:not(.dark-theme-body) {
+  --editor-bg: #ffffff;
   --editor-text: #050505;
-  --toolbar-bg: #fff;
-  --toolbar-text: #444;
+  --toolbar-bg: #ffffff;
+  --toolbar-text: #444444;
   --toolbar-item-hover: #f0f0f0;
   --toolbar-active: #eef5ff;
-  --toolbar-divider: #eee;
-  --dropdown-bg: #fff;
+  --toolbar-divider: #eeeeee;
+  --dropdown-bg: #ffffff;
   --dropdown-text: #050505;
   --dropdown-hover: #f0f2f5;
-  --ime-menu-bg: #fff;
-  --ime-menu-text: #333;
-  --ime-menu-border: #ddd;
+  --ime-menu-bg: #ffffff;
+  --ime-menu-text: #333333;
+  --ime-menu-border: #cccccc;
   --ime-menu-shadow: 0px 5px 10px rgba(0, 0, 0, 0.2);
   --ime-active-item-bg: #eef5ff;
   --ime-active-item-text: #007bff;
-  --ime-index-color: #888;
+  --ime-index-color: #888888;
   --button-primary-bg: #007bff;
-  --button-primary-text: #fff;
+  --button-primary-text: #ffffff;
+}
+
+body.dark-theme-body, .dark-theme {
+  --editor-bg: #18191a;
+  --editor-text: #e4e6eb;
+  --toolbar-bg: #242526;
+  --toolbar-text: #e4e6eb;
+  --toolbar-item-hover: #3a3b3c;
+  --toolbar-active: #3b5998;
+  --toolbar-divider: #3e4042;
+  --dropdown-bg: #242526;
+  --dropdown-text: #e4e6eb;
+  --dropdown-hover: #3a3b3c;
+  --ime-menu-bg: #242526;
+  --ime-menu-text: #e4e6eb;
+  --ime-menu-border: #3e4042;
+  --ime-menu-shadow: 0px 5px 15px rgba(0, 0, 0, 0.5);
+  --ime-active-item-bg: #2d88ff;
+  --ime-active-item-text: #ffffff;
+  --ime-index-color: #b0b3b8;
+  --button-primary-bg: #3d87f5;
+  --button-primary-text: #ffffff;
+}
+
+/* Ensure Icons and SVG follow the theme */
+.dark-theme-body i, .dark-theme-body svg,
+.dark-theme i, .dark-theme svg {
+  fill: currentColor !important;
+  color: inherit !important;
+}
+
+/* Specific Portal & Dropdown Overrides for Lexical */
+.dark-theme-body .dropdown, .dark-theme .dropdown,
+.dark-theme-body .floating-menu, .dark-theme .floating-menu,
+.dark-theme-body .typeahead-menu, .dark-theme .typeahead-menu {
+  background-color: var(--dropdown-bg) !important;
+  color: var(--dropdown-text) !important;
+  border: 1px solid var(--ime-menu-border) !important;
 }
 
 /* Deep Dark Mode Theme applied via .dark-theme */
@@ -44,57 +82,41 @@
   --button-primary-text: #fff;
 }
 
-/* Force dark theme onto Lexical components with high specificity */
-.dark-theme [data-lexical-toolbar],
+/* High specificity overrides for Lexical UI components */
+.dark-theme-body .toolbar, 
 .dark-theme .toolbar {
   background-color: var(--toolbar-bg) !important;
   color: var(--toolbar-text) !important;
   border-bottom: 1px solid var(--toolbar-divider) !important;
 }
 
+.dark-theme-body .toolbar-item,
 .dark-theme .toolbar-item {
   color: var(--toolbar-text) !important;
 }
 
+.dark-theme-body .toolbar-item:hover:not([disabled]),
 .dark-theme .toolbar-item:hover:not([disabled]) {
   background-color: var(--toolbar-item-hover) !important;
 }
 
+.dark-theme-body .toolbar-item.active,
 .dark-theme .toolbar-item.active {
   background-color: var(--toolbar-active) !important;
-  color: #fff !important;
 }
 
-.dark-theme .dropdown,
-.dark-theme .dropdown-menu,
-.dark-theme .floating-menu,
-.dark-theme .typeahead-menu {
-  background-color: var(--dropdown-bg) !important;
-  color: var(--dropdown-text) !important;
-  border: 1px solid var(--ime-menu-border) !important;
-  box-shadow: var(--ime-menu-shadow) !important;
-}
-
-.dark-theme .dropdown-item,
+.dark-theme-body .item,
 .dark-theme .item {
   color: var(--dropdown-text) !important;
 }
 
-.dark-theme .dropdown-item:hover,
+.dark-theme-body .item:hover,
 .dark-theme .item:hover {
   background-color: var(--dropdown-hover) !important;
 }
 
-.dark-theme .divider {
-  background-color: var(--toolbar-divider) !important;
-}
-
-.dark-theme .editor-container {
-  background-color: var(--editor-bg) !important;
-  color: var(--editor-text) !important;
-}
-
-.dark-theme .ContentEditable__root {
+.dark-theme-body .editor-container, .dark-theme .editor-container,
+.dark-theme-body .ContentEditable__root, .dark-theme .ContentEditable__root {
   background-color: var(--editor-bg) !important;
   color: var(--editor-text) !important;
 }

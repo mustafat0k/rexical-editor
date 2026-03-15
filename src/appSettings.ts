@@ -39,6 +39,7 @@ export const DEFAULT_SETTINGS = {
   tableHorizontalScroll: true,
   useCollabV2: false,
   isCangjie: true,
+  isPinyin: true,
 } as const;
 
 // These are mutated in setupEnv

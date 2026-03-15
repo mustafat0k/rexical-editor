@@ -13,8 +13,10 @@ import {
   $getRoot,
   defineExtension,
   EditorState,
+  LexicalEditor,
 } from 'lexical';
-import {type JSX, useMemo} from 'react';
+import {type JSX, useMemo, useEffect} from 'react';
+import {useLexicalComposerContext} from '@lexical/react/LexicalComposerContext';
 
 import {isDevPlayground} from './appSettings';
 import {buildHTMLConfig} from './buildHTMLConfig';
@@ -25,6 +27,7 @@ import {ToolbarContext} from './context/ToolbarContext';
 import Editor from './Editor';
 import logo from './images/logo.svg';
 import CangjiePlugin from './plugins/CangjiePlugin';
+import PinyinPlugin from './plugins/PinyinPlugin';
 import PlaygroundNodes from './nodes/PlaygroundNodes';
 import DocsPlugin from './plugins/DocsPlugin';
 import PasteLogPlugin from './plugins/PasteLogPlugin';
@@ -40,9 +43,20 @@ interface AppProps {
   darkMode?: boolean;
 }
 
+function GlobalStatePlugin(): null {
+  const [editor] = useLexicalComposerContext();
+  useEffect(() => {
+    (window as any).getEditorContent = () => {
+      return JSON.stringify(editor.getEditorState().toJSON());
+    };
+  }, [editor]);
+  return null;
+}
+
 function App({initialContent, onChange, darkMode}: AppProps): JSX.Element {
   const {
-    settings: {isCollab, emptyEditor, measureTypingPerf, isCangjie},
+    settings: {isCollab, emptyEditor, measureTypingPerf, isCangjie, isPinyin},
+    setOption,
   } = useSettings();
 
   const app = useMemo(
@@ -85,8 +99,25 @@ function App({initialContent, onChange, darkMode}: AppProps): JSX.Element {
                   </a>
                 </header>
                 <div className="editor-shell">
+                  <div className="toolbar-v2">
+                    <button
+                      type="button"
+                      onClick={() => setOption('isCangjie', !isCangjie)}
+                      className={'toolbar-item ' + (isCangjie ? 'active' : '')}
+                      title="Cangjie IME">
+                      <span className="text">倉</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setOption('isPinyin', !isPinyin)}
+                      className={'toolbar-item ' + (isPinyin ? 'active' : '')}
+                      title="Pinyin IME">
+                      <span className="text">拼</span>
+                    </button>
+                  </div>
                   <Editor />
                   <CangjiePlugin enabled={isCangjie} />
+                  {isPinyin && <PinyinPlugin />}
                 </div>
                 <Settings />
                 {isDevPlayground ? <DocsPlugin /> : null}
@@ -96,9 +127,11 @@ function App({initialContent, onChange, darkMode}: AppProps): JSX.Element {
                 
                 {/* Change Logging Plugin */}
                 <OnChangePlugin onChange={(editorState) => {
-                  console.log('Lexical Content Changed:', editorState.toJSON());
+                  const jsonState = JSON.stringify(editorState.toJSON());
+                  console.log('Lexical State Update (JSON):', jsonState);
                   if (onChange) onChange(editorState);
                 }} />
+                <GlobalStatePlugin />
 
               </ToolbarContext>
             </TableContext>
@@ -106,99 +139,6 @@ function App({initialContent, onChange, darkMode}: AppProps): JSX.Element {
         </LexicalExtensionComposer>
       </LexicalCollaboration>
       
-      <style>{`
-        .lexical-v2-dark .editor-shell {
-          background: #111 !important;
-          color: #eee !important;
-        }
-        .lexical-v2-dark .editor-container {
-          background: #222 !important;
-          border-color: #444 !important;
-        }
-        .lexical-v2-dark .editor {
-           color: #eee !important;
-        }
-        .lexical-v2-dark .toolbar {
-          background: #333 !important;
-          border-bottom-color: #444 !important;
-        }
-        .lexical-v2-dark .toolbar .button {
-          color: #ccc !important;
-        }
-        .lexical-v2-dark .toolbar .button:hover {
-          background: #444 !important;
-        }
-        .lexical-v2-dark .scroller {
-           background: #222 !important;
-        }
-        /* Simple dark mode overrides for playground elements */
-        .lexical-v2-dark .ContentEditable__root {
-          color: #ccc;
-        }
-        .lexical-v2-dark .toolbar .button i {
-          filter: invert(1);
-        }
-        .lexical-v2-dark .toolbar .button:hover i {
-          filter: invert(1) brightness(1.2);
-        }
-        .lexical-v2-dark .toolbar .chevron-down {
-          filter: invert(1);
-        }
-        .lexical-v2-dark .toolbar .divider {
-          background-color: #444 !important;
-        }
-        /* Dropdowns and menus */
-        .lexical-v2-dark .dropdown {
-          background: #333 !important;
-          border-color: #444 !important;
-          color: #eee !important;
-        }
-        .lexical-v2-dark .dropdown .item {
-          background: #333 !important;
-          color: #eee !important;
-        }
-        .lexical-v2-dark .dropdown .item:hover {
-          background: #444 !important;
-        }
-        .lexical-v2-dark .dropdown .item .icon {
-           filter: invert(1);
-        }
-        .lexical-v2-dark .icon.table {
-          background-color: #eee !important;
-        }
-
-        /* Cangjie Menu Styles */
-        .cangjie-menu {
-          --cangjie-bg: #fff;
-          --cangjie-border: #ccc;
-          --cangjie-text: #333;
-          --cangjie-hover: #f0f0f0;
-          --cangjie-selected: #e6f7ff;
-        }
-        .lexical-v2-dark .cangjie-menu {
-          --cangjie-bg: #222;
-          --cangjie-border: #444;
-          --cangjie-text: #eee;
-          --cangjie-hover: #333;
-          --cangjie-selected: #113a5d;
-        }
-        .cangjie-menu .item {
-          padding: 8px 12px;
-          cursor: pointer;
-          color: var(--cangjie-text);
-          font-size: 16px;
-          border-bottom: 1px solid var(--cangjie-border);
-        }
-        .cangjie-menu .item:last-child {
-          border-bottom: none;
-        }
-        .cangjie-menu .item:hover {
-          background-color: var(--cangjie-hover);
-        }
-        .cangjie-menu .item.selected {
-          background-color: var(--cangjie-selected);
-        }
-      `}</style>
     </div>
   );
 }
