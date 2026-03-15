@@ -104,9 +104,7 @@ function App({initialContent, onChange, darkMode}: AppProps): JSX.Element {
                   <a href="https://lexical.dev" target="_blank" rel="noreferrer">
                     <img src={logo} alt="Lexical Logo" />
                   </a>
-                </header>
-                <div className="editor-shell">
-                  <div className="toolbar-v2">
+                  <div className="toolbar-v2-inline">
                     <button
                       type="button"
                       onClick={() => setOption('activeIME', activeIME === 'cj' ? 'none' : 'cj')}
@@ -122,6 +120,8 @@ function App({initialContent, onChange, darkMode}: AppProps): JSX.Element {
                       <span className="text">音</span>
                     </button>
                   </div>
+                </header>
+                <div className="editor-shell">
                   <Editor />
                   <CangjieHandler enabled={activeIME === 'cj'} />
                   {activeIME === 'py' && <PinyinHandler />}
