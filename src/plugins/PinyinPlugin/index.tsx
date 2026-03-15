@@ -1,3 +1,6 @@
+/**
+ * Pinyin Input Method Handler for Lexical
+ */
 
 import {useLexicalComposerContext} from '@lexical/react/LexicalComposerContext';
 import {
@@ -14,14 +17,15 @@ import {useCallback, useMemo, useState} from 'react';
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
-import {PINYIN_DATA} from './pinyinData';
+// Inlining the Data Bridge for offline-first bundling
+import {PINYIN_DATA as PINYIN_DATA_BRIDGE} from './pinyinData';
 
 class PinyinOption extends MenuOption {
   char: string;
   index: number;
 
   constructor(char: string, index: number) {
-    super(char);
+    super(char + index);
     this.char = char;
     this.index = index;
   }
@@ -61,7 +65,7 @@ function PinyinMenuItem({
   );
 }
 
-export default function PinyinPlugin(): React.JSX.Element | null {
+export default function PinyinHandler(): React.JSX.Element | null {
   const [editor] = useLexicalComposerContext();
   const [queryString, setQueryString] = useState<string | null>(null);
 
@@ -74,7 +78,7 @@ export default function PinyinPlugin(): React.JSX.Element | null {
     if (!queryString) {
       return [];
     }
-    const chars = PINYIN_DATA[queryString.toLowerCase()] || [];
+    const chars = PINYIN_DATA_BRIDGE[queryString.toLowerCase()] || [];
     return chars.map((char, index) => new PinyinOption(char, index));
   }, [queryString]);
 
@@ -101,7 +105,7 @@ export default function PinyinPlugin(): React.JSX.Element | null {
   );
 
   return (
-    <LexicalTypeaheadMenuPlugin
+    <LexicalTypeaheadMenuPlugin<PinyinOption>
       onQueryChange={setQueryString}
       onSelectOption={onSelectOption}
       triggerFn={checkForTriggerMatch}

@@ -22,8 +22,8 @@ import {
 import {DEFAULT_SETTINGS, INITIAL_SETTINGS} from '../appSettings';
 
 type SettingsContextShape = {
-  setOption: (name: SettingName, value: boolean) => void;
-  settings: Record<SettingName, boolean>;
+  setOption: (name: SettingName, value: any) => void;
+  settings: Record<SettingName, any>;
 };
 
 const Context: React.Context<SettingsContextShape> = createContext({

@@ -16,11 +16,11 @@ const __dirname = resolve(__filename, '..');
 // https://vitejs.dev/config/
 export default defineConfig(({mode}) => ({
   build: {
-    outDir: 'build-esm-v2',
+    outDir: 'build-esm',
     lib: {
-      entry: resolve(__dirname, 'src/esm-entry-v2.tsx'),
-      name: 'LexicalPlaygroundV2',
-      fileName: 'lexical-playground-v2',
+      entry: resolve(__dirname, 'src/esm-entry.tsx'),
+      name: 'LexicalPlayground',
+      fileName: 'lexical-playground',
       formats: ['es'],
     },
     rollupOptions: {

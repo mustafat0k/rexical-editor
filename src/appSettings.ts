@@ -38,12 +38,13 @@ export const DEFAULT_SETTINGS = {
   tableCellMerge: true,
   tableHorizontalScroll: true,
   useCollabV2: false,
-  isCangjie: true,
-  isPinyin: true,
+  isCangjie: false,
+  isPinyin: false,
+  activeIME: 'none' as 'none' | 'cj' | 'py',
 } as const;
 
 // These are mutated in setupEnv
-export const INITIAL_SETTINGS: Record<SettingName, boolean> = {
+export const INITIAL_SETTINGS: Record<SettingName, boolean | string> = {
   ...DEFAULT_SETTINGS,
 };
 

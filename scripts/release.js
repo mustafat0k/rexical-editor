@@ -34,7 +34,7 @@ try {
   const nodeDir = 'C:\\Program Files\\nodejs';
   const npmPath = path.join(nodeDir, 'npm.cmd');
   
-  execSync(`"${npmPath}" run build:esm:v2`, { 
+  execSync(`"${npmPath}" run build:esm`, { 
     cwd: PACKAGE_ROOT, 
     stdio: 'inherit',
     env: {
@@ -52,9 +52,9 @@ if (!fs.existsSync(versionPath)) {
   fs.mkdirSync(versionPath, { recursive: true });
 }
 
-const BUILD_OUT = path.join(PACKAGE_ROOT, 'build-esm-v2');
-const jsFile = path.join(BUILD_OUT, 'lexical-playground-v2.js');
-const cssFile = path.join(BUILD_OUT, 'lexical-playground-v2.css');
+const BUILD_OUT = path.join(PACKAGE_ROOT, 'build-esm');
+const jsFile = path.join(BUILD_OUT, 'lexical-playground.js');
+const cssFile = path.join(BUILD_OUT, 'lexical-playground.css');
 
 if (fs.existsSync(jsFile)) {
   const targetJs = path.join(versionPath, 'editor.bundle.js');

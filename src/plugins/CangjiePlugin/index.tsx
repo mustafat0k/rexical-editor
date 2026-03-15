@@ -1,5 +1,5 @@
 /**
- * Cangjie Input Method Plugin for Lexical
+ * Cangjie Input Method Handler for Lexical
  */
 
 import {useLexicalComposerContext} from '@lexical/react/LexicalComposerContext';
@@ -18,21 +18,17 @@ import * as React from 'react';
 import {createPortal} from 'react-dom';
 
 import {CANGJIE_DICTIONARY as BASIC_DICTIONARY} from './cangjieData';
-// Inlining the large JSON directly for offline-first bundling
-import CANGJIE_JSON from './cangjie5.json';
+// Inlining the Data Bridge for offline-first bundling
+import CANGJIE_DATA_BRIDGE from './cangjie5.json';
 
-// Combine basic dictionary with JSON for better coverage
 const CANGJIE_MAP = new Map<string, string[]>();
 
-// Initialize with basic roots
 Object.entries(BASIC_DICTIONARY).forEach(([k, w]) => {
   CANGJIE_MAP.set(k, w);
 });
 
-// Add from full JSON - ensuring ALL characters are queryable
-CANGJIE_JSON.forEach((item: any) => {
+CANGJIE_DATA_BRIDGE.forEach((item: any) => {
   const existing = CANGJIE_MAP.get(item.k) || [];
-  // Append new characters if they don't exist to avoid duplicates while maximizing coverage
   const newChars = Array.isArray(item.w) ? item.w : [item.w];
   const combined = Array.from(new Set([...existing, ...newChars]));
   CANGJIE_MAP.set(item.k, combined);
@@ -44,7 +40,7 @@ class CangjieOption extends MenuOption {
   originalIndex: number;
 
   constructor(character: string, code: string, index: number) {
-    super(code + character + index); // Unique key
+    super(code + character + index);
     this.character = character;
     this.code = code;
     this.originalIndex = index;
@@ -66,10 +62,10 @@ function CangjieMenuItem({
 }) {
   return (
     <li
-      key={(option as any).key}
+      key={option.key}
       tabIndex={-1}
       className={`item ${isSelected ? 'selected' : ''}`}
-      ref={(option as any).setRefElement}
+      ref={option.setRefElement}
       role="option"
       aria-selected={isSelected}
       onMouseEnter={onMouseEnter}
@@ -109,15 +105,12 @@ function CangjieMenu({
   useEffect(() => {
     const handler = (event: KeyboardEvent) => {
       const {key} = event;
-      
-      // Select first option with Space or current highlighted
       if (key === ' ' && options.length > 0) {
         event.preventDefault();
         event.stopPropagation();
         selectOptionAndCleanUp(options[selectedIndex ?? 0]);
         return;
       }
-
       const num = parseInt(key, 10);
       if (!isNaN(num) && num > 0 && num <= options.length && num <= 9) {
         event.preventDefault();
@@ -132,7 +125,7 @@ function CangjieMenu({
   return (
     <div className="typeahead-menu cangjie-menu" style={{ 
       zIndex: 10000,
-      marginTop: '25px' // Offset from cursor
+      marginTop: '25px'
     }}>
       <ul style={{
         display: 'flex',
@@ -152,7 +145,7 @@ function CangjieMenu({
       }}>
         {options.slice(0, 9).map((option, i) => (
           <CangjieMenuItem
-            key={(option as any).key}
+            key={option.key}
             isSelected={selectedIndex === i}
             onClick={() => {
               setHighlightedIndex(i);
@@ -170,7 +163,7 @@ function CangjieMenu({
   );
 }
 
-export default function CangjiePlugin({
+export default function CangjieHandler({
   enabled = true,
 }: {
   enabled?: boolean;
@@ -180,7 +173,6 @@ export default function CangjiePlugin({
 
   const triggerFn = useCallback((text: string) => {
     if (!enabled) return null;
-    // Allow matching 1 to 5 letters for full character search
     const match = /(?:^|\s|[^a-zA-Z])([a-y]{1,5})$/.exec(text);
     if (match) {
       const code = match[1];
