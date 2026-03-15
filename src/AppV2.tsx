@@ -42,7 +42,7 @@ interface AppProps {
 
 function App({initialContent, onChange, darkMode}: AppProps): JSX.Element {
   const {
-    settings: {isCollab, emptyEditor, measureTypingPerf},
+    settings: {isCollab, emptyEditor, measureTypingPerf, isCangjie},
   } = useSettings();
 
   const app = useMemo(
@@ -86,7 +86,7 @@ function App({initialContent, onChange, darkMode}: AppProps): JSX.Element {
                 </header>
                 <div className="editor-shell">
                   <Editor />
-                  <CangjiePlugin />
+                  <CangjiePlugin enabled={isCangjie} />
                 </div>
                 <Settings />
                 {isDevPlayground ? <DocsPlugin /> : null}

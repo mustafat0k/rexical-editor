@@ -612,7 +612,8 @@ export default function ToolbarPlugin({
   );
 
   const {
-    settings: {isCodeHighlighted, isCodeShiki},
+    settings: {isCodeHighlighted, isCodeShiki, isCangjie},
+    setOption,
   } = useSettings();
 
   const $handleCodeNode = useCallback(
@@ -1416,6 +1417,16 @@ export default function ToolbarPlugin({
           )}
         </>
       )}
+      <button
+        onClick={() => {
+          setOption('isCangjie', !isCangjie);
+        }}
+        className={'toolbar-item spaced ' + (isCangjie ? 'active' : '')}
+        title="Cangjie IME"
+        type="button"
+        aria-label="Toggle Cangjie IME">
+        <span style={{fontWeight: 'bold', fontSize: '14px'}}>倉</span>
+      </button>
       <Divider />
       <ElementFormatDropdown
         disabled={!isEditable}
