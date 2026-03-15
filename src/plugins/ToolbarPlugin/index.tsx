@@ -1422,10 +1422,10 @@ export default function ToolbarPlugin({
           setOption('isCangjie', !isCangjie);
         }}
         className={'toolbar-item spaced ' + (isCangjie ? 'active' : '')}
-        title="Cangjie IME"
+        title="Toggle Cangjie IME"
         type="button"
         aria-label="Toggle Cangjie IME">
-        <span style={{fontWeight: 'bold', fontSize: '14px'}}>倉</span>
+        <span className="text" style={{ fontWeight: 'bold' }}>倉</span>
       </button>
       <Divider />
       <ElementFormatDropdown

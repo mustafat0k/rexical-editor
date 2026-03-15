@@ -1,17 +1,13 @@
-/**
- * Copyright (c) Meta Platforms, Inc. and affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- *
- *
- */
+@import './Variables.css';
+
 :root {
   --lexical-indent-base-value: 40px;
 }
+
 .PlaygroundEditorTheme__paragraph {
   margin: 0;
   position: relative;
+  color: var(--editor-text);
 }
 .PlaygroundEditorTheme__quote {
   margin: 0;
