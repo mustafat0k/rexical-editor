@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lexical Playground ESM Bundle Demo</title>
+    <!-- Load the bundled CSS -->
+    <link rel="stylesheet" href="./style-v2.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: #f4f4f4;
+            transition: background 0.3s;
+        }
+
+        .controls {
+            text-align: center;
+            padding: 20px;
+            background: #fff;
+            border-bottom: 1px solid #ddd;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .settings-box {
+            margin-top: 15px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background: #fdfdfd;
+            display: inline-block;
+            text-align: left;
+        }
+
+        #editor-container {
+            margin: 20px auto;
+            max-width: 1200px;
+            min-height: 800px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background: #fff;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .dark-mode-body {
+            background: #1a1a1a;
+            color: #eee;
+        }
+
+        button {
+            padding: 8px 16px;
+            cursor: pointer;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            background: #fff;
+            font-weight: bold;
+        }
+
+        button.primary {
+            background: #007bff;
+            color: white;
+            border-color: #0056b3;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="controls">
+        <h1>Lexical Playground CDN/Offline Demo</h1>
+        
+        <div class="settings-box">
+            <h3 style="margin-top:0">Editor Settings</h3>
+            <div style="margin-bottom: 10px;">
+                <label>Initial Text: <input type="text" id="initial-text" value="Cangjie IME is enabled by default!" style="width: 250px; padding: 4px;"></label>
+            </div>
+            <div style="margin-bottom: 10px;">
+                <label><input type="checkbox" id="dark-mode-toggle"> Enable Dark Mode</label>
+            </div>
+            <button id="reload-btn" class="primary">Reload Editor</button>
+            <p style="font-size: 0.85em; color: #666; margin-top: 8px;">
+                💡 This version includes <b>Cangjie IME</b> (Type 'a'-'y'), <b>Dark Mode</b>, and <b>Console Logging</b>.
+            </p>
+        </div>
+    </div>
+
+    <!-- The container element for Lexical -->
+    <div id="editor-container"></div>
+
+    <script type="module">
+        const container = document.getElementById('editor-container');
+        const initialText = document.getElementById('initial-text');
+        const darkMode = document.getElementById('dark-mode-toggle');
+        const reloadBtn = document.getElementById('reload-btn');
+
+        async function mountEditor() {
+            container.innerHTML = '';
+            
+            if (darkMode.checked) {
+                document.body.classList.add('dark-mode-body');
+            } else {
+                document.body.classList.remove('dark-mode-body');
+            }
+
+            // Import the V2 bundle
+            const { initLexicalPlaygroundV2 } = await import('./lexical-playground-v2.es.js');
+            
+            initLexicalPlaygroundV2('editor-container', {
+                initialContent: initialText.value,
+                darkMode: darkMode.checked,
+                onChange: (editorState) => {
+                    console.log('Editor State Changed:', editorState);
+                }
+            });
+        }
+
+        reloadBtn.addEventListener('click', mountEditor);
+        
+        // Initial load
+        mountEditor();
+    </script>
+</body>
+
+</html>
+ml>

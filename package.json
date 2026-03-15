@@ -7,7 +7,6 @@
     "dev": "vite --host --port 3000",
     "build-dev": "vite build",
     "build-prod": "vite build --mode production",
-    "build:esm": "vite build --config vite.esm.config.ts",
     "build:esm:v2": "vite build --config vite.esm-v2.config.ts",
     "build-vercel": "(cd ../../ && node ./scripts/build.js) && pnpm run build-dev",
     "preview": "vite preview --port 4000 --host"

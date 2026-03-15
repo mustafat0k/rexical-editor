@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lexical Playground ESM Bundle Demo</title>
-    <!-- Load the bundled CSS (V1 by default) -->
-    <link id="main-style" rel="stylesheet" href="./style.css">
+    <!-- Load the bundled CSS -->
+    <link rel="stylesheet" href="./style-v2.css">
     <style>
         body {
             margin: 0;
@@ -24,7 +24,7 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
 
-        .version-box {
+        .settings-box {
             margin-top: 15px;
             padding: 15px;
             border: 1px solid #ddd;
@@ -59,44 +59,30 @@
             font-weight: bold;
         }
 
-        button:hover {
-            background: #f0f0f0;
-        }
-
         button.primary {
             background: #007bff;
             color: white;
             border-color: #0056b3;
-        }
-
-        button.primary:hover {
-            background: #0069d9;
         }
     </style>
 </head>
 
 <body>
     <div class="controls">
-        <h1>Lexical Playground Bundle Demo</h1>
+        <h1>Lexical Playground CDN/Offline Demo</h1>
         
-        <div class="version-box">
-            <h3 style="margin-top:0">Choose Version & Options</h3>
+        <div class="settings-box">
+            <h3 style="margin-top:0">Editor Settings</h3>
             <div style="margin-bottom: 10px;">
-                <button id="load-v1" class="primary">Load V1 (Legacy)</button>
-                <button id="load-v2" style="margin-left: 10px;">Load V2 (New Features)</button>
+                <label>Initial Text: <input type="text" id="initial-text" value="Cangjie IME is enabled by default!" style="width: 250px; padding: 4px;"></label>
             </div>
-            
-            <div id="v2-settings" style="display: none; border-top: 1px solid #eee; padding-top: 10px;">
-                <div style="margin-bottom: 5px;">
-                    <label>Initial Text: <input type="text" id="initial-text" value="Welcome to Lexical V2!" style="width: 250px; padding: 4px;"></label>
-                </div>
-                <div>
-                    <label><input type="checkbox" id="dark-mode-toggle"> Enable Dark Mode</label>
-                </div>
-                <p style="font-size: 0.85em; color: #666; margin-top: 8px;">
-                    💡 V2 includes <b>Initial Content</b>, <b>Dark Mode</b>, and <b>Console Logging</b>.
-                </p>
+            <div style="margin-bottom: 10px;">
+                <label><input type="checkbox" id="dark-mode-toggle"> Enable Dark Mode</label>
             </div>
+            <button id="reload-btn" class="primary">Reload Editor</button>
+            <p style="font-size: 0.85em; color: #666; margin-top: 8px;">
+                💡 This version includes <b>Cangjie IME</b> (Type 'a'-'y'), <b>Dark Mode</b>, and <b>Console Logging</b>.
+            </p>
         </div>
     </div>
 
@@ -105,30 +91,12 @@
 
     <script type="module">
         const container = document.getElementById('editor-container');
-        const v2Settings = document.getElementById('v2-settings');
-        const v1Btn = document.getElementById('load-v1');
-        const v2Btn = document.getElementById('load-v2');
         const initialText = document.getElementById('initial-text');
         const darkMode = document.getElementById('dark-mode-toggle');
-        const styleLink = document.getElementById('main-style');
+        const reloadBtn = document.getElementById('reload-btn');
 
-        async function mountV1() {
+        async function mountEditor() {
             container.innerHTML = '';
-            v2Settings.style.display = 'none';
-            document.body.classList.remove('dark-mode-body');
-            styleLink.href = './style.css';
-            
-            const { initLexicalPlayground } = await import('./lexical-playground.es.js');
-            initLexicalPlayground('editor-container');
-            
-            v1Btn.classList.add('primary');
-            v2Btn.classList.remove('primary');
-        }
-
-        async function mountV2() {
-            container.innerHTML = '';
-            v2Settings.style.display = 'block';
-            styleLink.href = './style-v2.css';
             
             if (darkMode.checked) {
                 document.body.classList.add('dark-mode-body');
@@ -136,22 +104,24 @@
                 document.body.classList.remove('dark-mode-body');
             }
 
+            // Import the V2 bundle
             const { initLexicalPlaygroundV2 } = await import('./lexical-playground-v2.es.js');
+            
             initLexicalPlaygroundV2('editor-container', {
                 initialContent: initialText.value,
-                darkMode: darkMode.checked
+                darkMode: darkMode.checked,
+                onChange: (editorState) => {
+                    console.log('Editor State Changed:', editorState);
+                }
             });
-            
-            v1Btn.classList.remove('primary');
-            v2Btn.classList.add('primary');
         }
 
-        v1Btn.addEventListener('click', mountV1);
-        v2Btn.addEventListener('click', mountV2);
+        reloadBtn.addEventListener('click', mountEditor);
         
-        // Initial load V1
-        mountV1();
+        // Initial load
+        mountEditor();
     </script>
 </body>
 
 </html>
+ml>
